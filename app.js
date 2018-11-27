@@ -174,7 +174,7 @@
 		
 		app.post('/setCustomerName', function (req, res) {
 		
-			console.log( 'Request object: ', JSON.stringify(req) );
+			console.log( 'Request object: ', JSON.stringify(req.body) );
 			socket.emit('setUserName', {userName : req.body.userName, userType : req.body.userType});
 			
 			res.status(200).send({
