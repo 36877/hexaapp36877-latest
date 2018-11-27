@@ -171,6 +171,17 @@
 		socket.on('msg', function(data) {
 			io.sockets.in(data.uId).emit('newMsg', data);
 		})
+		
+		app.post('/setCustomerName', function (req, res) {
+		
+			console.log( 'Request object: ', JSON.stringify(req) );
+			socket.emit('setUserName', {userName : req.body.userName, userType : req.body.userType});
+			
+			res.status(200).send({
+				success: 'true',
+				message: 'setUserName successfully triggered'
+			})
+		});
 	});
 	
 	function getRooms(){
@@ -184,16 +195,7 @@
 		return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
 	}
 	
-	app.post('/setCustomerName', function (req, res) {
-		
-		console.log( 'Request object: '+req );
-		socket.emit('setUserName', {userName : req.body.userName, userType : req.body.userType});
-		
-		res.status(200).send({
-			success: 'true',
-			message: 'setUserName successfully triggered'
-		})
-	});
+	
 
 	server.listen(port,function(req,res){
 		console.log('\nServer Running on port' , port);
