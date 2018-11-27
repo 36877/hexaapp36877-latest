@@ -12,7 +12,7 @@
 	var session = require('express-session');
 	var io = require('socket.io').listen(server);
 	var port = process.env.PORT || 3000;
-	
+	var ioClient = require('socket.io-client')('https://agentlivechat-latest.herokuapp.com/');
 	var mainController = require('./controller/mainController');
 	
 	var sess; 
@@ -173,19 +173,8 @@
 		
 		socket.on('msg', function(data) {
 			io.sockets.in(data.uId).emit('newMsg', data);
-		})
+		})		
 		
-		app.post('/setCustomerName', function (req, res) {
-		
-			console.log( 'Request object: ', JSON.stringify(req.body) );
-			socket.emit('setUserName', {userName : req.body.userName, userType : req.body.userType});
-			socket.emit('userWaitingOnline', {userName : req.body.userName, userType : req.body.userType});
-			
-			res.status(200).send({
-				success: 'true',
-				message: 'setUserName successfully triggered'
-			})
-		});
 	});
 	
 	function getRooms(){
@@ -199,7 +188,19 @@
 		return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
 	}
 	
+	/*======================Webservices======================*/
 	
+	app.post('/setCustomerName', function (req, res) {
+		
+			console.log( 'Request object: ', JSON.stringify(req.body) );
+			ioClient.emit('setUserName', {userName : req.body.userName, userType : req.body.userType});
+			ioClient.emit('userWaitingOnline', {userName : req.body.userName, userType : req.body.userType});
+			
+			res.status(200).send({
+				success: 'true',
+				message: 'setUserName successfully triggered'
+			})
+		});
 
 	server.listen(port,function(req,res){
 		console.log('\nServer Running on port' , port);
