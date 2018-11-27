@@ -43,6 +43,7 @@
 	
 	/* Chat box css */
 	
+	
 	body{margin-top:20px;
 	background:#eee;
 	}
@@ -184,9 +185,10 @@
 			margin-bottom:15px;
 		}
 	}
+
   </style>
 </head>
-<body onbeforeunload="return windowClose()">
+<body>
 
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
@@ -206,6 +208,7 @@
         <li><a href="#">Help</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
+        <!-- <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li> -->
       </ul>
     </div>
   </div>
@@ -217,6 +220,8 @@
     <div class="col-sm-12 text-left"> 
 	  
 	  <h1 class="text-center">Chat with Support Team</h1>
+	  
+
 	  
 	    <!-- Chat box start -->
 		<div class="col-md-6 col-lg-7 col-md-offset-3">
@@ -234,11 +239,15 @@
 			</div>
 			
 			<div id="setUserProfile" class="panel-body" style="display:none;">
+				
+
 				<div class="panel panel-primary form-horizontal">
 					<div class="panel-heading">
 						<h4 class="text-center">Enter your details</h4>					
 					</div>
 					<div class="panel-body">
+					
+					
 					  <div id = "error-container" class="form-group"></div>
 
 					  <div class="form-group">
@@ -253,7 +262,7 @@
 					  </div>
 					  <div class="form-group"> 
 						<div class="col-sm-10">
-						  <button type="submit" class="btn btn-default" id="setUserProfileBtn" onclick="this.disabled=true; setUserProfile()">Submit</button>
+						  <button type="submit" class="btn btn-default" onclick="setUserProfile()">Submit</button>
 						</div>
 					  </div>
 					</div>
@@ -263,16 +272,65 @@
 			
 			<div id="waiting" class="panel-body alert alert-success alert-dismissible" role="alert" auto-close="5000" style="margin-top:100px;display:none;">
 				
-				<h4>Please wait...</h4>
+				<h4>Please wait for an Agent...</h4>
 							
 			</div>
 		
 		
 			<div id="chatbox" class="panel panel-default chat-widget" style="display:none;">
 			  <div class="panel-heading">
-				<h3 class="panel-title"><i class="fa fa-comments"></i> Chat <span><a data-toggle="collapse" href="#chatbox"  class="close" onclick="endChat()">&times </a></span></h3>
+				<h3 class="panel-title"><i class="fa fa-comments"></i> Chat</h3>
 			  </div>
 			  <div class="panel-body" id="message-container" style="height:300px; min-height: 300px; max-height: 300px; overflow-y: scroll;">
+			  
+				  <!--
+				  <div class="message">
+						<div class="avatar">
+						<img class="img-circle avatar" alt="chat avatar" src="https://bootdey.com/img/Content/avatar/avatar2.png">
+						</div>
+						<div class="message-text-wrapper">
+							<div class="message-text">
+							  Basic panel example awesome one bewsom Basic panel example awesome
+							</div>
+						</div>
+				  </div>
+
+				  <div class="message message-right">
+
+						<div class="avatar">
+						<img class="img-circle avatar" alt="chat avatar" src="https://bootdey.com/img/Content/avatar/avatar1.png">
+						</div>
+						<div class="message-text-wrapper">
+							<div class="message-text">
+							  Basic panel example awesome one bewsom Basic panel example awesome
+							</div>
+						</div>
+				  </div>
+
+				  <div class="message">
+				  		<div class="avatar">
+						<img class="img-circle avatar" alt="chat avatar" src="https://bootdey.com/img/Content/avatar/avatar2.png">
+						</div>
+						<div class="message-text-wrapper">
+							<div class="message-text">
+							  <a href="#" title="Singapore cityscape" data-gallery="">
+									<img src="https://lorempixel.com/200/320/nature/3/" alt="singapore pic"></a>
+							</div>
+						</div>
+				  </div>
+
+				  <div class="message message-right">
+						<div class="avatar">
+						<img class="img-circle avatar" alt="chat avatar" src="https://bootdey.com/img/Content/avatar/avatar1.png">
+						</div>
+						<div class="message-text-wrapper">
+							<div class="message-text">
+							  Basic panel example awesome one bewsom Basic panel example awesome
+							</div>
+						</div>
+				  </div>
+				  
+				  -->
 				</div>
 				<div class="panel-footer" style="background-color:grey;">
 				  	<div class="avatar">
@@ -287,8 +345,10 @@
 				</div>
 			</div>
 		</div>
-		<!-- chat box end -->
+	  <!-- chat box end -->
 	  
+	  
+
     </div>
   </div>
 </div>
@@ -300,78 +360,9 @@
 <script>
 	var socket = io();
 	
-	var userType = 'customer';
-	var uId = '';
-	var userName = '';
-	
-	socket.on('userExists', function(data) {
-		document.getElementById('error-container').innerHTML = data.errorMsg;
-	});
-	
-	socket.on('userSet', function(data) {
-		userName = data.userName;
-		uId = data.uId;
-		socket.emit('subscribe', { uId : data.uId, userName : data.userName, userType : userType });
-		userWaitingListUpdate();
-	});
-	
-	socket.on('newMsg', function(data) {
-	
-		console.log(data);
-		
-		if(userName) {
-			if(userName === data.userName) {
-				document.getElementById('message-container').innerHTML += '<div class="message"><div class="avatar"><img class="img-circle avatar" alt="chat avatar" src="/images/avatar2.png"></div><div class="message-text-wrapper"><div class="message-text"><b>' + 
-				   data.userName + '</b>: ' + data.message + '</div></div></div>';
-				
-				scrollToBottom();
-			}
-			else {
-				document.getElementById('message-container').innerHTML += '<div class="message message-right"><div class="avatar"><img class="img-circle avatar" alt="chat avatar" src="/images/avatar1.png"></div><div class="message-text-wrapper"><div class="message-text"><b>' + 
-	   data.userName + '</b>: ' + data.message + '</div></div></div>';
-				
-				scrollToBottom();
-			}
-		}
-	})
-	
-	var x = document.getElementsByClassName("list-group-item");
-	
-    for (i = 0; i < x.length; i++) {
-		x[i].onclick=function(){ 
-			console.log($(this).text());
-			$("#catList").hide("slow");			
-			$("#setUserProfile").show("slow");
-        }
-    }
-	
-	function userWaitingListUpdate() {
-		socket.emit('userWaitingOnline', {uId : uId, userName : userName});
-		alert('OnlineList triger');
-	}
-	
-	function setUserName() {
-		var usrName = (document.getElementById('username').value).trim();
-		console.log("test 56",usrName);
-		socket.emit('setUserName', {userName : usrName, userType : userType});
-	}
-	
-	function sendMessage() {
-		var msg = document.getElementById('message').value;
-		if(msg) {
-			socket.emit('msg', {uId: uId, message: msg, userName: userName});
-			document.getElementById('message').value = '';
-		}
-	}
-	
-	function endChat() {
-		$("#chatbox").hide("slow");
-		socket.emit('unsubscribe', {uId : uId, userName : userName});
-	}
-	
-	function setUserProfile() {
-		
-		$("#setUserProfileBtn").addClass("disabledbutton"); // To make it disable to prevent double click
+	var user;
+
+	function setUserProfile(){
 		$("#setUserProfile").hide("slow");
 		$("#waiting").show("slow");
 		
@@ -381,16 +372,52 @@
 			alert.each(function() {
 				var that = $(this);
 				var time_period = that.attr('auto-close');
-				
 				setTimeout(function() {
 					that.alert('close');
 					
-					setUserName();
+					// socket.io set username
+					setUsername();
 					
 					$("#chatbox").show("slow");
 				}, time_period);
 			});
 		});	
+	}
+
+	var x = document.getElementsByClassName("list-group-item");
+	
+    for (i = 0; i < x.length; i++) {
+		x[i].onclick=function(){ 
+			console.log($(this).text());
+			$("#catList").hide("slow");			
+			$("#setUserProfile").show("slow");
+        }
+    }
+
+	function setUsername() {
+		socket.emit('setUsername', document.getElementById('username').value);
+	};
+
+	socket.on('userExists', function(data) {
+		document.getElementById('error-container').innerHTML = data;
+	});
+	
+	socket.on('userSet', function(data) {
+		user = data.username;
+
+		/*
+		document.body.innerHTML = '<input type = "text" id = "message">\
+		<button type = "button" name = "button" onclick = "sendMessage()">Send</button>\
+		<div id = "message-container"></div>';
+		*/
+	});
+	
+	function sendMessage() {
+		var msg = document.getElementById('message').value;
+		if(msg) {
+			socket.emit('msg', {message: msg, user: user});
+			document.getElementById('message').value='';
+		}
 	}
 	
 	function scrollToBottom() {
@@ -398,7 +425,25 @@
 		div.scrollTop(div.prop('scrollHeight'));
 	}
 	
-	$('#message').keypress(function(event)	{	
+	socket.on('newmsg', function(data) {
+		if(user) {
+			if(user===data.user) {
+				document.getElementById('message-container').innerHTML += '<div class="message"><div class="avatar"><img class="img-circle avatar" alt="chat avatar" src="/images/avatar2.png"></div><div class="message-text-wrapper"><div class="message-text"><b>' + 
+				   data.user + '</b>: ' + data.message + '</div></div></div>';
+				
+				scrollToBottom();
+			}
+			else{
+				document.getElementById('message-container').innerHTML += '<div class="message message-right"><div class="avatar"><img class="img-circle avatar" alt="chat avatar" src="/images/avatar1.png"></div><div class="message-text-wrapper"><div class="message-text"><b>' + 
+	   data.user + '</b>: ' + data.message + '</div></div></div>';
+				
+				scrollToBottom();
+			}
+		}
+	})
+	
+	
+	$('#message').keypress(function(event){		
 		
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 		
@@ -406,10 +451,7 @@
 			sendMessage();	
 		}
 	});
-	
-	function windowClose(){
-		endChat();
-	}
+
 </script>
 </body>
 </html>

@@ -186,7 +186,7 @@
 	}
   </style>
 </head>
-<body onbeforeunload="return windowClose()">
+<body>
 
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
@@ -253,7 +253,7 @@
 					  </div>
 					  <div class="form-group"> 
 						<div class="col-sm-10">
-						  <button type="submit" class="btn btn-default" id="setUserProfileBtn" onclick="this.disabled=true; setUserProfile()">Submit</button>
+						  <button type="submit" class="btn btn-default" onclick="setUserProfile()">Submit</button>
 						</div>
 					  </div>
 					</div>
@@ -298,37 +298,30 @@
 </footer>
 
 <script>
-	var socket = io();
-	
-	var userType = 'customer';
-	var uId = '';
-	var userName = '';
-	
+	var socket = io('http://localhost:3000');
+	var user="";
+
 	socket.on('userExists', function(data) {
-		document.getElementById('error-container').innerHTML = data.errorMsg;
+		document.getElementById('error-container').innerHTML = data;
 	});
 	
 	socket.on('userSet', function(data) {
-		userName = data.userName;
-		uId = data.uId;
-		socket.emit('subscribe', { uId : data.uId, userName : data.userName, userType : userType });
+		user = data.username;
+		socket.emit('subscribe', data.username);
 		userWaitingListUpdate();
 	});
 	
-	socket.on('newMsg', function(data) {
-	
-		console.log(data);
-		
-		if(userName) {
-			if(userName === data.userName) {
+	socket.on('newmsg', function(data) {
+		if(user) {
+			if(user===data.user) {
 				document.getElementById('message-container').innerHTML += '<div class="message"><div class="avatar"><img class="img-circle avatar" alt="chat avatar" src="/images/avatar2.png"></div><div class="message-text-wrapper"><div class="message-text"><b>' + 
-				   data.userName + '</b>: ' + data.message + '</div></div></div>';
+				   data.user + '</b>: ' + data.message + '</div></div></div>';
 				
 				scrollToBottom();
 			}
-			else {
+			else{
 				document.getElementById('message-container').innerHTML += '<div class="message message-right"><div class="avatar"><img class="img-circle avatar" alt="chat avatar" src="/images/avatar1.png"></div><div class="message-text-wrapper"><div class="message-text"><b>' + 
-	   data.userName + '</b>: ' + data.message + '</div></div></div>';
+	   data.user + '</b>: ' + data.message + '</div></div></div>';
 				
 				scrollToBottom();
 			}
@@ -336,7 +329,6 @@
 	})
 	
 	var x = document.getElementsByClassName("list-group-item");
-	
     for (i = 0; i < x.length; i++) {
 		x[i].onclick=function(){ 
 			console.log($(this).text());
@@ -345,33 +337,30 @@
         }
     }
 	
-	function userWaitingListUpdate() {
-		socket.emit('userWaitingOnline', {uId : uId, userName : userName});
+	function userWaitingListUpdate(){
+		socket.emit('userWaitingOnline', user);
 		alert('OnlineList triger');
 	}
 	
-	function setUserName() {
-		var usrName = (document.getElementById('username').value).trim();
-		console.log("test 56",usrName);
-		socket.emit('setUserName', {userName : usrName, userType : userType});
+	function setUsername() {
+		socket.emit('setUsername', (document.getElementById('username').value).trim());
 	}
 	
 	function sendMessage() {
 		var msg = document.getElementById('message').value;
 		if(msg) {
-			socket.emit('msg', {uId: uId, message: msg, userName: userName});
-			document.getElementById('message').value = '';
+			socket.emit('msg', {room: user, message: msg, user: user});
+			document.getElementById('message').value='';
 		}
 	}
 	
-	function endChat() {
+	function endChat()
+	{
 		$("#chatbox").hide("slow");
-		socket.emit('unsubscribe', {uId : uId, userName : userName});
+		socket.emit('unsubscribe', user);
 	}
 	
 	function setUserProfile() {
-		
-		$("#setUserProfileBtn").addClass("disabledbutton"); // To make it disable to prevent double click
 		$("#setUserProfile").hide("slow");
 		$("#waiting").show("slow");
 		
@@ -385,7 +374,7 @@
 				setTimeout(function() {
 					that.alert('close');
 					
-					setUserName();
+					setUsername();
 					
 					$("#chatbox").show("slow");
 				}, time_period);
@@ -398,7 +387,7 @@
 		div.scrollTop(div.prop('scrollHeight'));
 	}
 	
-	$('#message').keypress(function(event)	{	
+	$('#message').keypress(function(event){		
 		
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 		
@@ -407,9 +396,6 @@
 		}
 	});
 	
-	function windowClose(){
-		endChat();
-	}
 </script>
 </body>
 </html>
