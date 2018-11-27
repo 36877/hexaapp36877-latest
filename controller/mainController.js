@@ -26,7 +26,9 @@
 
 	// Login TO DB ==================================================================
 	app.post('/admin/dashbrd',urlencodedParser,function(req, res){
-		MongoClient.connect(url, function(err, db) {
+		
+		res.render('admin/dashboard',{loginData:user});
+		/*MongoClient.connect(url, function(err, db) {
 			db.collection('adminuser').findOne({ name: req.body.uname}, function(err, user) {
 			if(err) {
 				console.log(err);
@@ -41,7 +43,7 @@
 					}
 				}
 			});
-		});
+		});*/
 	});	
 	
 	/* ==================================== agent routes ======================== */
@@ -59,8 +61,10 @@
 	app.post('/agent/dashbrd',urlencodedParser,function(req, res){
 		
 		sess = req.session;
+			sess.uname = req.body.uname;
+						res.render('agent/dashbrd',{uname: sess.uname});
 		
-		MongoClient.connect(url, function(err, db) {
+		/*MongoClient.connect(url, function(err, db) {
 			db.collection('agents').findOne({ name: req.body.uname}, function(err, user) {
 				if(err)	{
 					console.log(err);
@@ -76,7 +80,7 @@
 					}
 				}	
 			});
-		});
+		});*/
 	});
 	
 	/* ==================================== agent routes (get) ======================== */
