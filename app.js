@@ -134,6 +134,7 @@
 		});		
 		
 		socket.on('setUserName', function(data) {
+			console.log('I am inside setUserName : ', data);
 			var uId = generateId();
 			
 			if(data.userType === 'agent'){
@@ -178,6 +179,7 @@
 		
 			console.log( 'Request object: ', JSON.stringify(req.body) );
 			socket.emit('setUserName', {userName : req.body.userName, userType : req.body.userType});
+			socket.emit('userWaitingOnline', {userName : req.body.userName, userType : req.body.userType});
 			
 			res.status(200).send({
 				success: 'true',
