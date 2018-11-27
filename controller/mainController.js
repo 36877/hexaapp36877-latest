@@ -110,15 +110,6 @@
 	
 	/*======================== Web services =====================*/
 	
-	app.post('/setCustomerName', function (req, res) {
-		
-		console.log( 'Request object: '+req );
-		socket.emit('setUserName', {userName : req.body.userName, userType : req.body.userType});
-		
-		res.status(200).send({
-			success: 'true',
-			message: 'setUserName successfully triggered'
-		})
-	})
+	
 	
 });
