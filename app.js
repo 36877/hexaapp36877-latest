@@ -10,6 +10,7 @@
 	var server = http.createServer(app);
 	var session = require('express-session');
 	var io = require('socket.io').listen(server);
+	var port = process.env.PORT || 3000;
 	
 	var mainController = require('./controller/mainController');
 	
@@ -183,6 +184,6 @@
 		return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
 	}
 
-	server.listen(3000,function(req,res){
-		console.log('\nServer Running on port 3000 - http://localhost:3000/');
+	server.listen(port,function(req,res){
+		console.log('\nServer Running on port' , port);
 	});
