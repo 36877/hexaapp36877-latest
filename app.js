@@ -7,6 +7,7 @@
 	var express = require('express');
 	var http = require('http');
 	var app = express();
+	var bodyParser = require('body-parser');
 	var server = http.createServer(app);
 	var session = require('express-session');
 	var io = require('socket.io').listen(server);
@@ -23,6 +24,7 @@
 	usersConversationInPgrs = [];
 	
 	app.set('view engine','ejs');
+	 app.use(bodyParser.json());
 	app.use(express.static(__dirname + '/public'));	
 	app.use(session({secret: 'ssshhhhh'}));
 
