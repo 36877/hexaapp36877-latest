@@ -12,8 +12,8 @@
 	var session = require('express-session');
 	var io = require('socket.io').listen(server);
 	var port = process.env.PORT || 3000;
-	// var ioClient = require('socket.io-client')('https://agentlivechat-latest.herokuapp.com/');
-	var ioClient = require('socket.io-client')('http');
+	var ioClient = require('socket.io-client')('https://agentlivechat-latest.herokuapp.com/');
+	//var ioClient = require('socket.io-client')('http');
 	var mainController = require('./controller/mainController');
 	
 	var sess; 
@@ -28,6 +28,13 @@
 	 app.use(bodyParser.json());
 	app.use(express.static(__dirname + '/public'));	
 	app.use(session({secret: 'ssshhhhh'}));
+	app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", '*');
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
+  next();
+});
 
 	mainController(app);
 	
