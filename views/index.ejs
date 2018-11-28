@@ -317,7 +317,7 @@
 	
 	socket.on('newMsg', function(data) {
 	
-		console.log(data);
+		console.log("Inside newMsg...",data);
 		
 		if(userName) {
 			if(userName === data.userName) {

@@ -290,7 +290,7 @@
 					<div class="input-group">
 						<input type="text" id="message" placeholder="Press Enter" class="form-control primary">
 						<span class="input-group-btn">
-							<button class="btn btn-primary" type="button" name="button" onclick="sendMessage()">Send</button>
+							<button class="btn btn-primary" type="button" name="button" onclick="sendMessageAgent()">Send</button>
 						</span>
 					</div>
 				</div>
@@ -413,7 +413,8 @@
 		document.getElementById('error-container').innerHTML = data.errorMsg;
 	});
 	
-	socket.on('newMsg', function(data) {
+	socket.on('newMsgAgent', function(data) {
+		console.log("Inside newMsgAgent.....", data);
 		if(agentName) {
 			if( agentName === data.userName ) {
 				document.getElementById('message-container').innerHTML += '<div class="message"><div class="avatar"><img class="img-circle avatar" alt="chat avatar" src="/agents/images/avatar1.png"></div><div class="message-text-wrapper"><div class="message-text"><b>' + 
@@ -433,7 +434,7 @@
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 		
 		if(keycode == '13'){
-			sendMessage();
+			sendMessageAgent();
 		}
 	});
 	
@@ -460,11 +461,11 @@
 		alert('onlogout called.');
 	}
 	
-	function sendMessage() 
+	function sendMessageAgent() 
 	{
 		var msg = document.getElementById('message').value;
 		if(msg) {
-			socket.emit('msg', { uId: currentCustomerUid, message: msg, userName: agentName});
+			socket.emit('msgAgent', { uId: currentCustomerUid, message: msg, userName: agentName});
 			document.getElementById('message').value='';
 		}
 	}

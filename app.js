@@ -181,6 +181,10 @@
 		
 		socket.on('msg', function(data) {
 			io.sockets.in(data.uId).emit('newMsg', data);
+		})
+
+		socket.on('msgAgent', function(data) {
+			io.sockets.in(data.uId).emit('newMsgAgent', data);
 		})		
 		
 	});
