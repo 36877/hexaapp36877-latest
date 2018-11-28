@@ -318,7 +318,7 @@
 	socket.on('newMsg', function(data) {
 	
 		console.log("Inside newMsg...",data);
-		
+		data.history = "Hey dood";
 		if(userName) {
 			if(userName === data.userName) {
 				document.getElementById('message-container').innerHTML += '<div class="message"><div class="avatar"><img class="img-circle avatar" alt="chat avatar" src="/images/avatar2.png"></div><div class="message-text-wrapper"><div class="message-text"><b>' + 
