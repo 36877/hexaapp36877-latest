@@ -315,6 +315,12 @@
 		socket.emit('subscribe', { uId : data.uId, userName : data.userName, userType : userType });
 		userWaitingListUpdate();
 	});
+
+	socket.on('createChatHistory', function(data){
+		var msg = data.message;
+		history.push(msg);
+
+	})
 	
 	socket.on('newMsg', function(data) {
 	

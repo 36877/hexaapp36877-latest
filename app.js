@@ -15,13 +15,13 @@
 	var ioClient = require('socket.io-client')('https://agentlivechat-latest.herokuapp.com/');
 	//var ioClient = require('socket.io-client')('http');
 	var mainController = require('./controller/mainController');
-	var redis = require('redis');
-	var credentials;
+	//var redis = require('redis');
+	// var credentials;
 	
-	// On localhost just hardcode the connection details
-	credentials = { "host": "127.0.0.1", "port": 3448 };
-	// Connect to Redis
-	var redisClient = redis.createClient(credentials.port, credentials.host);
+	// // On localhost just hardcode the connection details
+	// credentials = { "host": "127.0.0.1", "port": 3448 };
+	// // Connect to Redis
+	// var redisClient = redis.createClient(credentials.port, credentials.host);
 	// if('password' in credentials) {
 	// // On Bluemix we need to authenticate against Redis
 	// redisClient.auth(credentials.password);
@@ -35,6 +35,7 @@
 	
 	usersWaitingForAgents = [];
 	usersConversationInPgrs = [];
+	var chatHistory = [];
 	
 	app.set('view engine','ejs');
 	 app.use(bodyParser.json());
@@ -195,7 +196,7 @@
 			console.log("on msg............", data);
 			// redisClient.lpush('messages', JSON.stringify(data));
  			// redisClient.ltrim('messages', 0, 99);
-
+			 io.sockets.in(data.uId).emit('createChatHistory', data);
 			io.sockets.in(data.uId).emit('newMsg', data);
 		})
 
@@ -204,7 +205,10 @@
 		})		
 		
 	});
-	
+	function createChatHistory(message){
+		history.push(message);
+		return history;
+	}
 	function getRooms(){
 		return Object.keys(io.sockets.adapter.rooms);
 	}
