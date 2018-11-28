@@ -362,6 +362,7 @@
 	});
 	
 	function selectUserForConversation() {
+		var history = "hello";
 		var x = document.getElementsByClassName("list-group-item");
 		for (i = 0; i < x.length; i++) {
 			x[i].onclick = function(){
@@ -387,7 +388,10 @@
 				document.getElementById('conversationInPgresLst').innerHTML += '<li class="list-group-item list-group-item-action" onclick="selectUserForConversation()" id="'+currentCustomerUid+'"><a href="#"><span class="glyphicon glyphicon-user"></span>'+currentCustomerName+'</a></li>'; 
 				
 				*/
+				document.getElementById('message-container').innerHTML += '<div class="message"><div class="avatar"><img class="img-circle avatar" alt="chat avatar" src="/agents/images/avatar1.png"></div><div class="message-text-wrapper"><div class="message-text"><b>' + 
+				   history + '</b>: ' + history + '</div></div></div>';
 				
+				scrollToBottom();
 				previousCustomerUid = currentCustomerUid;
 				previousCustomerName = currentCustomerName;
 			}
