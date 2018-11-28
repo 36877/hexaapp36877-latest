@@ -17,16 +17,9 @@
 	var mainController = require('./controller/mainController');
 	var redis = require('redis');
 	var credentials;
-	// Check if we are in Bluemix or localhost
-	if(process.env.VCAP_SERVICES) {
-	// On Bluemix read connection settings from
-	// VCAP_SERVICES environment variable
-	var env = JSON.parse(process.env.VCAP_SERVICES);
-	credentials = env['redis-2.6'][0]['credentials'];
-	} else {
+	
 	// On localhost just hardcode the connection details
-	credentials = { "host": "127.0.0.1", "port": 3448 }
-	}
+	credentials = { "host": "127.0.0.1", "port": 3448 };
 	// Connect to Redis
 	var redisClient = redis.createClient(credentials.port, credentials.host);
 	// if('password' in credentials) {
