@@ -25,7 +25,7 @@
 	credentials = env['redis-2.6'][0]['credentials'];
 	} else {
 	// On localhost just hardcode the connection details
-	credentials = { "host": "127.0.0.1", "port": 6379 }
+	credentials = { "host": "127.0.0.2", "port": 6379 }
 	}
 	// Connect to Redis
 	var redisClient = redis.createClient(credentials.port, credentials.host);
