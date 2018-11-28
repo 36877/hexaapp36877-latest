@@ -303,6 +303,7 @@
 	var userType = 'customer';
 	var uId = '';
 	var userName = '';
+	var history = [];
 	
 	socket.on('userExists', function(data) {
 		document.getElementById('error-container').innerHTML = data.errorMsg;
@@ -358,8 +359,9 @@
 	
 	function sendMessage() {
 		var msg = document.getElementById('message').value;
+		history.push(msg);
 		if(msg) {
-			socket.emit('msg', {uId: uId, message: msg, userName: userName});
+			socket.emit('msg', {uId: uId, message: msg, userName: userName, history: history});
 			document.getElementById('message').value = '';
 		}
 	}

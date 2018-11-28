@@ -15,6 +15,25 @@
 	var ioClient = require('socket.io-client')('https://agentlivechat-latest.herokuapp.com/');
 	//var ioClient = require('socket.io-client')('http');
 	var mainController = require('./controller/mainController');
+	var redis = require('redis');
+	var credentials;
+	// Check if we are in Bluemix or localhost
+	if(process.env.VCAP_SERVICES) {
+	// On Bluemix read connection settings from
+	// VCAP_SERVICES environment variable
+	var env = JSON.parse(process.env.VCAP_SERVICES);
+	credentials = env['redis-2.6'][0]['credentials'];
+	} else {
+	// On localhost just hardcode the connection details
+	credentials = { "host": "127.0.0.1", "port": 6379 }
+	}
+	// Connect to Redis
+	var redisClient = redis.createClient(credentials.port, credentials.host);
+	// if('password' in credentials) {
+	// // On Bluemix we need to authenticate against Redis
+	// redisClient.auth(credentials.password);
+	// }
+
 	
 	var sess; 
 	
@@ -180,6 +199,10 @@
 		})
 		
 		socket.on('msg', function(data) {
+			console.log("on msg............", data);
+			// redisClient.lpush('messages', JSON.stringify(data));
+ 			// redisClient.ltrim('messages', 0, 99);
+
 			io.sockets.in(data.uId).emit('newMsg', data);
 		})
 
