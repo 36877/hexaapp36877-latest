@@ -194,7 +194,7 @@
 		
 		socket.on('msg', function(data) {
 			console.log("on msg............", data);
-			data.history.push(createChatHistory(data, socket));
+			createChatHistory(data, socket);
 			
 			// redisClient.lpush('messages', JSON.stringify(data));
  			// redisClient.ltrim('messages', 0, 99);
@@ -210,8 +210,8 @@
 
 	function createChatHistory(data,socket) {
 	console.log("Inside create history");
-	history.push(data.message);
-	return history;
+	data.history.push(data.message);
+	return data;
    	}
 	// function createChatHistory(message){
 	// 	history.push(message);
