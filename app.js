@@ -35,7 +35,6 @@
 	
 	usersWaitingForAgents = [];
 	usersConversationInPgrs = [];
-	var chatHistory = [];
 	
 	app.set('view engine','ejs');
 	 app.use(bodyParser.json());
@@ -194,7 +193,6 @@
 		
 		socket.on('msg', function(data) {
 			console.log("on msg............", data);
-			createChatHistory(data, socket);
 			
 			// redisClient.lpush('messages', JSON.stringify(data));
  			// redisClient.ltrim('messages', 0, 99);
@@ -207,12 +205,6 @@
 		})		
 		
 	});
-
-	function createChatHistory(data,socket) {
-	console.log("Inside create history");
-	data.history.push(data.message);
-	return data;
-   	}
 	// function createChatHistory(message){
 	// 	history.push(message);
 	// 	return history;
