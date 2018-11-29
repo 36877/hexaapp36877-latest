@@ -194,9 +194,11 @@
 		
 		socket.on('msg', function(data) {
 			console.log("on msg............", data);
+			data.history.push(createChatHistory(data, socket));
+			
 			// redisClient.lpush('messages', JSON.stringify(data));
  			// redisClient.ltrim('messages', 0, 99);
-			 io.sockets.in(data.uId).emit('createChatHistory', data);
+			 //io.sockets.in(data.uId).emit('createChatHistory', function(data);
 			io.sockets.in(data.uId).emit('newMsg', data);
 		})
 
@@ -205,10 +207,16 @@
 		})		
 		
 	});
-	function createChatHistory(message){
-		history.push(message);
-		return history;
-	}
+
+	function createChatHistory(data,socket) {
+	console.log("Inside create history");
+	history.push(data.message);
+	return history;
+   	}
+	// function createChatHistory(message){
+	// 	history.push(message);
+	// 	return history;
+	// }
 	function getRooms(){
 		return Object.keys(io.sockets.adapter.rooms);
 	}
