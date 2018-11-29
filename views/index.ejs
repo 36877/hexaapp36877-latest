@@ -365,7 +365,6 @@
 	
 	function sendMessage() {
 		var msg = document.getElementById('message').value;
-		history.push(msg);
 		if(msg) {
 			socket.emit('msg', {uId: uId, message: msg, userName: userName, history: history});
 			document.getElementById('message').value = '';
