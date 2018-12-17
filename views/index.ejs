@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src = "https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
+  <script src = "http://localhost:3000/socket.io/socket.io.js"></script>
   <style type="text/css">
     /* Remove the navbar's default margin-bottom and rounded borders */ 
     .navbar {
@@ -264,7 +264,7 @@
 			<div id="waiting" class="panel-body alert alert-success alert-dismissible" role="alert" auto-close="5000" style="margin-top:100px;display:none;">
 				
 				<h4>Please wait...</h4>
-							
+				
 			</div>
 		
 		
@@ -303,6 +303,7 @@
 	var userType = 'customer';
 	var uId = '';
 	var userName = '';
+	var msgBucket =	[];
 	
 	socket.on('userExists', function(data) {
 		document.getElementById('error-container').innerHTML = data.errorMsg;
@@ -314,6 +315,11 @@
 		socket.emit('subscribe', { uId : data.uId, userName : data.userName, userType : userType });
 		userWaitingListUpdate();
 	});
+	
+	socket.on('loadPreChatMsgHistory', function(data) {
+		alert('loadPreChatMsgHistory called');
+		socket.emit('loadPreMsgHistory', {uId : data.uId, userName : data.userName, msgBucket : msgBucket});
+	})
 	
 	socket.on('newMsg', function(data) {
 	
@@ -347,18 +353,18 @@
 	
 	function userWaitingListUpdate() {
 		socket.emit('userWaitingOnline', {uId : uId, userName : userName});
-		alert('OnlineList triger');
 	}
 	
 	function setUserName() {
 		var usrName = (document.getElementById('username').value).trim();
-		console.log("test 56",usrName);
 		socket.emit('setUserName', {userName : usrName, userType : userType});
 	}
 	
 	function sendMessage() {
 		var msg = document.getElementById('message').value;
 		if(msg) {
+			msgBucket.push({uId: uId, message: msg, userName: userName});
+			console.log("Testg "+JSON.stringify(msgBucket));
 			socket.emit('msg', {uId: uId, message: msg, userName: userName});
 			document.getElementById('message').value = '';
 		}
@@ -366,7 +372,8 @@
 	
 	function endChat() {
 		$("#chatbox").hide("slow");
-		socket.emit('unsubscribe', {uId : uId, userName : userName});
+		socket.emit('unsubscribe', {uId : uId, userName : userName, userType : userType});
+		socket.emit('userWaitingOnline', {uId : uId, userName : userName});
 	}
 	
 	function setUserProfile() {

@@ -12,7 +12,7 @@
 	var session = require('express-session');
 	var io = require('socket.io').listen(server);
 	var port = process.env.PORT || 3000;
-	var ioClient = require('socket.io-client')('https://agentlivechat-latest.herokuapp.com/');
+	var ioClient = require('socket.io-client')('http://localhost:3000/');
 	var mainController = require('./controller/mainController');
 	
 	var sess; 
@@ -24,7 +24,7 @@
 	usersConversationInPgrs = [];
 	
 	app.set('view engine','ejs');
-	 app.use(bodyParser.json());
+	app.use(bodyParser.json());
 	app.use(express.static(__dirname + '/public'));	
 	app.use(session({secret: 'ssshhhhh'}));
 
@@ -71,7 +71,8 @@
 							
 							if(index > -1){
 								customers.splice(index, 1);
-								io.sockets.emit('userLeft', {uId : data.uId, totalWaitingUsers : customers.length} );
+								console.log("special check inside customers: "+customers.length);
+								io.sockets.in('usersWaitingOnlineRoom').emit('userLeft', {uId : data.uId, customers: customers, totalWaitingUsers : customers.length} );
 								
 								console.log('\nAfter unsubscribe :');
 								console.log('\n Customers :');
@@ -106,7 +107,8 @@
 							
 							if(index > -1){
 								agents.splice(index, 1);
-								io.sockets.emit('userLeft', {uId : data.uId, totalWaitingUsers : customers.length} );
+								console.log("special check inside agent: "+customers.length);
+								io.sockets.in('usersWaitingOnlineRoom').emit('userLeft', {uId : data.uId, customers: customers, totalWaitingUsers : customers.length} );
 								
 								console.log('\nAfter unsubscribe :');
 								console.log('\n Customers :');
@@ -168,11 +170,21 @@
 		});
 		
 		socket.on('userWaitingOnline', function(data) {
-			io.sockets.emit('userWaitingOnline1', {uId : data.uId, userName: data.userName, totalWaitingUsers : customers.length} );
+			console.log("Data.......", JSON.stringify(data));
+			io.sockets.in('usersWaitingOnlineRoom').emit('userWaitingOnline1', {uId : data.uId, userName: data.userName, customers : customers , totalWaitingUsers : customers.length} );
+		})
+		
+		socket.on('loadPreChatMsgs', function(data) {
+			console.log('inside loadPreChatMsgs for '+data.uId+ ' - '+ data.userName);
+			io.sockets.in(data.uId).emit('loadPreChatMsgHistory', data );
 		})
 		
 		socket.on('msg', function(data) {
 			io.sockets.in(data.uId).emit('newMsg', data);
+		})
+
+		socket.on('loadPreMsgHistory', function(data) {
+			io.sockets.in(data.uId).emit('loadPreMsgHistory1', data);
 		})		
 		
 	});
