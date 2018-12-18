@@ -12,7 +12,7 @@
 	var session = require('express-session');
 	var io = require('socket.io').listen(server);
 	var port = process.env.PORT || 3000;
-	var ioClient = require('socket.io-client')('http://localhost:3000/');
+	var ioClient = require('socket.io-client')('https://agentlivechat-latest.herokuapp.com/');
 	var mainController = require('./controller/mainController');
 	
 	var sess; 
